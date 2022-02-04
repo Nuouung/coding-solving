@@ -16,8 +16,8 @@ public class FourthDot {
         int xC = in.nextInt();
         int yC = in.nextInt();
 
-        int xD = 0;
-        int yD = 0;
+        int xD;
+        int yD;
 
         if (xA == xB) {
             xD = xC;
