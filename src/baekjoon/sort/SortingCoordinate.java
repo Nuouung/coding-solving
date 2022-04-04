@@ -16,32 +16,26 @@ public class SortingCoordinate {
         // 5. 출력
         // 6. 계속 진행
 
-        // 준비물
-        // 1. key와 (x,y) value를 가진 Map<Integer, List<Integer>)
-        // 2. x값 비교를 위한 int[]
-        // 3. y값 비교를 위한 List<Integer>
-
         Scanner in = new Scanner(System.in);
         int N = in.nextInt();
 
-        Map<Integer, List<Integer>> valueMap = new HashMap<>();
-        int[] arrayForX = new int[N];
-        List<Integer> listForY = new ArrayList<>();
+        int[][] arrayXAndY = new int[N][2];
 
         for (int i = 0; i < N; i++) {
-            List<Integer> tempList = new ArrayList<>();
-            int x = in.nextInt();
-            tempList.add(x);
-            tempList.add(in.nextInt());
-            valueMap.put(x, tempList);
-
-            arrayForX[i] = x;
+            arrayXAndY[i][0] = in.nextInt();
+            arrayXAndY[i][1] = in.nextInt();
         }
 
-        Arrays.sort(arrayForX);
+        Arrays.sort(arrayXAndY, (valueA, valueB) -> {
+            if (valueA[0] == valueB[0]) {
+                return valueA[1] - valueB[1];
+            } else {
+                return valueA[0] - valueB[0];
+            }
+        });
 
-        for (Integer integer : listForY) {
-
+        for (int i = 0; i < N; i++) {
+            System.out.println(arrayXAndY[i][0] + " " + arrayXAndY[i][1]);
         }
 
     }
