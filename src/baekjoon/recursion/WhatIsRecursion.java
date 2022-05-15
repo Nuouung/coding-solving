@@ -20,9 +20,7 @@ public class WhatIsRecursion {
         String delimiter = "____";
 
         StringBuilder depth = new StringBuilder();
-        for (int i = 0; i < count; i++) {
-            depth.append(delimiter);
-        }
+        depth.append(delimiter.repeat(Math.max(0, count)));
 
         if (N <= 0) {
             System.out.println(depth + RecursionConst.START_LINE);
