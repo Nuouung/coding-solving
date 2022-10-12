@@ -9,55 +9,43 @@ public class GoldbachConjecture {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int x;
+
+        int[] primeArray = getEratosthenesSieve(1_000_000);
         StringBuilder sb = new StringBuilder();
         while ((x = Integer.parseInt(br.readLine())) != 0) {
-            boolean checkA = false;
-
-            for (int i = 1; i < x / 2; i++) {
-                int smallOdd = (2 * i) + 1;
-                if (!isPrime(smallOdd)) continue;
-                if (smallOdd > x / 2) {
-                    sb.append("Goldbach's conjecture is wrong.").append("\n");
-                    break;
-                }
-
-                boolean checkB = false;
-
-                for (int j = x / 2; j > i + 1; j--) {
-                    int bigOdd = (2 * j) - 1;
-                    if (!isPrime(bigOdd)) continue;
-
-                    if (smallOdd + bigOdd == x) {
-                        sb.append(x)
-                                .append(" = ")
-                                .append(smallOdd)
-                                .append(" + ")
-                                .append(bigOdd)
-                                .append("\n");
-                        checkB = true;
-                        break;
-                    } else if (smallOdd + bigOdd > x) {
-                        break;
-                    }
-                }
-
-                if (checkB) {
-                    checkA = true;
+            boolean isYes = false;
+            for (int i = 2; i < x / 2; i++) {
+                if (primeArray[i - 1] != 0 && primeArray[x - i - 1] != 0) {
+                    System.out.println(x + " = " + i + " + " + (x - i));
+                    isYes = true;
                     break;
                 }
             }
 
-            if (!checkA) sb.append("Goldbach's conjecture is wrong.").append("\n");
+            if (!isYes) System.out.println("Goldbach's conjecture is wrong.");
         }
 
-        System.out.println(sb);
     }
 
-    private static boolean isPrime(int number) {
-        for (int i = 2; i < number; i++) {
-            if (number % i == 0) return false;
+    private static int[] getEratosthenesSieve(int max) {
+        int[] array = new int[max];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = i + 1;
         }
 
-        return true;
+        array[0] = 0; // 1은 소수가 아니므로 0 처리
+
+        for (int i = 0; i < array.length; i++) {
+            int number = array[i];
+            if (number != 0) {
+                int x = 2;
+                while (x * number <= max) {
+                    array[(number * x) - 1] = 0;
+                    x++;
+                }
+            }
+        }
+
+        return array;
     }
 }
