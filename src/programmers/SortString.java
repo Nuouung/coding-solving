@@ -2,17 +2,9 @@ package programmers;
 
 public class SortString {
 
-    public static void main(String[] args) {
-        String a = "Bcad";
-        SortString ss = new SortString();
-        ss.solution(a);
-
-    }
-
     public String solution(String my_string) {
         String lowerCaseString = toLowerCase(my_string);
-        sort(lowerCaseString);
-        return null;
+        return sort(lowerCaseString);
     }
 
     private String toLowerCase(String target) {
@@ -28,22 +20,27 @@ public class SortString {
         return sb.toString();
     }
 
-    private void sort(String target) {
+    private String sort(String target) {
         // bacd
         StringBuilder sb = new StringBuilder();
-        char previousChar = 0;
-        char targetChar = 0;
+        char previousChar = 10000;
+        int targetIndex = 0;
 
         for (int i = 0; i < target.length(); i++) {
 
-            for (char c : target.toCharArray()) {
-                if (c < previousChar) {
-                    previousChar = c;
-                    targetChar = c;
+            for (int j = 0; j < target.length(); j++) {
+                if (target.charAt(j) < previousChar) {
+                    previousChar = target.charAt(j);
+                    targetIndex = j;
                 }
             }
 
-            sb.append(targetChar);
+            sb.append(target.charAt(targetIndex));
+            target = target.substring(0, targetIndex) +  ((char) 10000) + target.substring(targetIndex + 1);
+            previousChar = 10000;
         }
+
+        return sb.toString();
     }
+
 }
