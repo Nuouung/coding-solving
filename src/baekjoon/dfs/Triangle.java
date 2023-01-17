@@ -1,87 +1,51 @@
 package baekjoon.dfs;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.Scanner;
 
 public class Triangle {
 
-    static List<Graph> graphList = new ArrayList<>();
-    static Stack<Graph> stack = new Stack<>();
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n = scanner.nextInt();
+        scanner.nextLine();
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-
-        int index = 0;
+        int[][] triangle = new int[n][n];
         for (int i = 0; i < n; i++) {
-            int depth = i + 1;
-            for (String s : br.readLine().split(" ")) {
-//                int parentNodeIndex = index - (depth - 1);
-                int childNodeIndex = index + depth;
-                List<Integer> linkedNodeIndexes = getLinkedNodeIndexes(childNodeIndex);
-
-                graphList.add(new Graph(index, depth, Integer.parseInt(s), linkedNodeIndexes));
-                index++;
+            int j = 0;
+            for (String s : scanner.nextLine().split(" ")) {
+                triangle[i][j] = Integer.parseInt(s);
+                j++;
             }
         }
 
-        int result = dfs(n);
-        System.out.println(result);
+        System.out.println(dp(triangle));
     }
 
-    private static int dfs(int n) {
+    static int dp(int[][] triangle) {
+        int[][] dp = new int[triangle.length][triangle.length];
+        dp[0][0] = triangle[0][0];
+
+        int depth = 1;
+        for (int i = 1; i < triangle.length; i++) {
+            // 왼쪽
+            dp[i][0] = triangle[i][0] + dp[i - 1][0];
+
+            // 오른쪽
+            dp[i][depth] = triangle[i][depth] + dp[i - 1][depth - 1];
+
+            // 가운데 n개
+            for (int j = 1; j < depth; j++) {
+                dp[i][j] = Math.max(dp[i - 1][j - 1], dp[i - 1][j]) + triangle[i][j];
+            }
+
+            depth++;
+        }
+
         int result = 0;
-
-//        boolean[] visited = new boolean[n];
-        int[] valueArray = new int[n];
-
-        stack.push(graphList.get(0));
-//        visited[0] = true;
-
-        while (!stack.isEmpty()) {
-            Graph current = stack.pop();
-            if (current.depth < n) {
-                List<Integer> linkedNodeIndexes = current.linkedNodeIndexes;
-                stack.push(graphList.get(linkedNodeIndexes.get(0)));
-                stack.push(graphList.get(linkedNodeIndexes.get(1)));
-            }
-
-            valueArray[current.depth - 1] = current.value;
-            if (current.depth == n) {
-                int temp = 0;
-                for (int i : valueArray) {
-                    temp += i;
-                }
-
-                if (temp > result) result = temp;
-            }
+        for (int i = 0; i < triangle.length; i++) {
+            result = Math.max(result, dp[triangle.length - 1][i]);
         }
 
         return result;
-    }
-
-    private static List<Integer> getLinkedNodeIndexes(int childNodeIndex) {
-        LinkedList<Integer> linkedNodeIndexes = new LinkedList<>();
-        linkedNodeIndexes.add(childNodeIndex);
-        linkedNodeIndexes.add(childNodeIndex + 1);
-
-        return linkedNodeIndexes;
-    }
-
-    static class Graph {
-        int index, depth, value;
-        List<Integer> linkedNodeIndexes;
-
-        Graph(int index, int depth, int value, List<Integer> linkedNodeIndexes) {
-            this.index = index;
-            this.depth = depth;
-            this.value = value;
-            this.linkedNodeIndexes = linkedNodeIndexes;
-        }
     }
 }
