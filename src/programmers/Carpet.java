@@ -8,23 +8,16 @@ public class Carpet {
     }
 
     public int[] solution(int brown, int yellow) {
-        int border = (brown + yellow) / 2 - 2;
-
-        double positiveResult = (border + Math.sqrt(Math.pow(border, 2) - 4 * yellow)) / 2;
-        double negativeResult = (border - Math.sqrt(Math.pow(border, 2) - 4 * yellow)) / 2;
-
-        int x = 0;
-        if (positiveResult == (int) positiveResult) { // 정수라는 뜻
-            x = (int) positiveResult;
-        } else if (negativeResult == (int) negativeResult) {
-            x = (int) negativeResult;
+        if ((brown - 4) % 2 != 0) {
+            throw new RuntimeException("Bad approach");
         }
 
+        int border = (brown - 4) / 2;
 
-        int y = border - x;
+        int x, y;
+        x = (int) (border + Math.sqrt(Math.pow(border, 2) - 4 * yellow)) / 2;
+        y = border - x;
 
-//        int xMaxLength = (int) Math.sqrt(yellow);
-
-        return new int[]{x, y};
+        return new int[]{x + 2, y + 2};
     }
 }
