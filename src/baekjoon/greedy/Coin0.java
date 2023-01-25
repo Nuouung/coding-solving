@@ -6,31 +6,25 @@ public class Coin0 {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        String index = in.nextLine();
-        int N = Integer.parseInt(index.split(" ")[0]);
-        int K = Integer.parseInt(index.split(" ")[1]);
 
-        int[] coinArray = new int[N];
-        for (int i = 0; i < N; i++) {
-            coinArray[i] = in.nextInt();
+        int N = in.nextInt();
+        int total = in.nextInt();
+
+        int[] coins = new int[N];
+        for (int i = N - 1; i >= 0; i--) {
+            coins[i] = in.nextInt();
         }
 
-        int count = 0;
-        while (K > 0) {
-            int maxCoin = 0;
-            for (int i = coinArray.length - 1; i >= 0; i--) {
-                if (coinArray[i] <= K) {
-                    maxCoin = coinArray[i];
-                    break;
-                }
+        int result = 0;
+        for (int coin : coins) {
+            while (total - coin >= 0) {
+                result++;
+                total = total - coin;
             }
 
-            while (maxCoin <= K) {
-                K -= maxCoin;
-                count++;
-            }
+            if (total == 0) break;
         }
 
-        System.out.println(count);
+        System.out.println(result);
     }
 }
