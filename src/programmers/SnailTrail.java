@@ -1,9 +1,15 @@
 package programmers;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class SnailTrail {
+
+    public static void main(String[] args) {
+        SnailTrail s = new SnailTrail();
+        for (int n : s.solution(5)) {
+            System.out.print(n + " ");
+        }
+    }
 
     int[][] snailTrail;
     boolean[][] visited;
@@ -17,11 +23,6 @@ public class SnailTrail {
     int currentX = 0, currentY = 0;
 
     int directionX = 0, directionY = 1;
-
-    public static void main(String[] args) {
-        SnailTrail s = new SnailTrail();
-        s.solution(6);
-    }
 
     public int[] solution(int n) {
         dataInit(n);
@@ -40,8 +41,21 @@ public class SnailTrail {
             }
         }
 
-        System.out.println("");
-        return new int[]{1};
+        return getResult(n);
+    }
+
+    private int[] getResult(int n) {
+        List<Integer> result = new ArrayList<>();
+        int resultIndex = 0;
+        for (int[] st : snailTrail) {
+            for (int number : st) {
+                if (number != 0) {
+                    result.add(number);
+                }
+            }
+        }
+
+        return result.stream().mapToInt(Integer::intValue).toArray();
     }
 
     private void rememberNewDirection() {
@@ -58,6 +72,7 @@ public class SnailTrail {
 
     private void lineNewBorder() {
         int newBorder = border.get(currentDirection)[0] == 0 ? currentX - directionX : currentY - directionY;
+        if (currentDirection == 'R') newBorder = newBorder - 1; // -1이 아니라 -2로 줄어드므로
 
         int[] targetBorder = border.get(currentDirection);
         targetBorder[1] = newBorder;
