@@ -26,8 +26,9 @@ public class Summarization {
         for (int i = 1; i < k; i++) {
             dp[i][0] = 1;
 
-            for (int j = 1; j < n + 1; j++)
+            for (int j = 1; j < n + 1; j++) {
                 dp[i][j] = (dp[i - 1][j] + dp[i][j - 1]) % COMPRESSOR;
+            }
         }
 
         System.out.println(dp[k - 1][n]);
