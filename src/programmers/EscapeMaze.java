@@ -5,94 +5,86 @@ import java.util.Queue;
 
 public class EscapeMaze {
 
-    int[] dx = {-1, 1, 0, 0};
-    int[] dy = {0, 0, -1, 1};
+    static int xLen, yLen;
+    static int[] S = new int[2];
+    static int[] L = new int[2];
+    static int[] E = new int[2];
+    static char[][] map;
+    static boolean[][] visited;
+    static int[] dx = {0, 0, -1, 1};
+    static int[] dy = {-1, 1, 0, 0};
 
-    Queue<Node> queue = new LinkedList<>();
-    boolean[][] visited;
+    static class Node {
+        int x, y, cnt;
 
-    public int solution(String[] maps) {
-        visited = new boolean[maps[0].length()][maps.length];
-
-        int startX = 0;
-        int startY = 0;
-        for (int i = 0; i < maps.length; i++) {
-            if (maps[i].indexOf('S') != -1) {
-                startX = i;
-                startY = maps[i].indexOf('S');
-                break;
-            }
+        public Node(int x, int y, int cnt) {
+            this.x = x;
+            this.y = y;
+            this.cnt = cnt;
         }
-
-        int toLever = bfs(startX, startY, maps, 'L');
-
-        startX = 0;
-        startY = 0;
-        for (int i = 0; i < maps.length; i++) {
-            if (maps[i].indexOf('L') != -1) {
-                startX = i;
-                startY = maps[i].indexOf('L');
-                break;
-            }
-        }
-
-        visited = new boolean[maps[0].length()][maps.length];
-
-        int toEnd = bfs(startX, startY, maps, 'E');
-
-        if (toLever == -1 || toEnd == -1) return -1;
-
-        return toLever + toEnd;
     }
 
-    int bfs(int startX, int startY, String[] maps, char target) {
-        queue.offer(new Node(startX, startY, 0));
-        visited[startY][startX] = true;
+    static int bfs(int x, int y, char target) {
+        Queue<Node> q = new LinkedList<>();
+        q.offer(new Node(x, y, 0));
+        visited[x][y] = true;
 
-        while (!queue.isEmpty()) {
-            Node node = queue.poll();
-
-            if (maps[node.y].charAt(node.x) == target)
-                return node.count;
-
-//            if (maps[node.y].charAt(node.x) == 'L') node.isLeverPass = true;
+        while (!q.isEmpty()) {
+            Node now = q.poll();
 
             for (int i = 0; i < 4; i++) {
-                int newX = node.x + dx[i];
-                int newY = node.y + dy[i];
+                int nextX = now.x + dx[i];
+                int nextY = now.y + dy[i];
 
-                if (newX >= 0 && newX < maps[0].length() && newY >= 0 && newY < maps.length) {
-                    if (maps[newY].charAt(newX) == 'X') continue;
-                    if (visited[newY][newX]) continue;
+                if (nextX < 0 || nextY < 0 || nextX >= xLen || nextY >= yLen)
+                    continue;
 
-                    queue.offer(new Node(newX, newY, node.count + 1));
-                    visited[newY][newX] = true;
+                if (map[nextX][nextY] == 'X' || visited[nextX][nextY] == true)
+                    continue;
 
-                }
+                if (map[nextX][nextY] == target)
+                    return now.cnt + 1;
+
+                q.offer(new Node(nextX, nextY, now.cnt + 1));
+                visited[nextX][nextY] = true;
             }
         }
 
         return -1;
     }
 
-    class Node {
-        int x;
-        int y;
-        int count;
-        boolean isLeverPass;
+    public int solution(String[] maps) {
+        int answer = 0;
+        int toLever = 0;
+        int toEnd = 0;
 
-        public Node(int x, int y, int count) {
-            this.x = x;
-            this.y = y;
-            this.count = count;
-            this.isLeverPass = false;
+        map = new char[maps.length][];
+
+        xLen = maps.length;
+        yLen = maps[0].length();
+
+        for (int i = 0; i < xLen; i++) {
+            for (int j = 0; j < yLen; j++) {
+                map[i] = maps[i].toCharArray();
+
+                if (map[i][j] == 'S') {
+                    S[0] = i; S[1] = j;
+                } else if (map[i][j] == 'L') {
+                    L[0] = i; L[1] = j;
+                } else if (map[i][j] == 'E') {
+                    E[0] = i; E[1] = j;
+                }
+            }
         }
 
-        public Node(int x, int y, int count, boolean isLeverPass) {
-            this.x = x;
-            this.y = y;
-            this.count = count;
-            this.isLeverPass = isLeverPass;
-        }
+        visited = new boolean[xLen][yLen];
+        toLever = bfs(S[0], S[1], 'L');
+
+        visited = new boolean[xLen][yLen];
+        toEnd = bfs(L[0], L[1], 'E');
+
+        if (toLever == -1 || toEnd == -1) return -1;
+
+        return toLever + toEnd;
     }
 }
