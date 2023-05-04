@@ -7,52 +7,33 @@ import java.util.Arrays;
 
 public class SevenDwarf {
 
-    static boolean[] visited = new boolean[9];
     static int[] dwarfs = new int[9];
-    static int[] dwarfsJar = new int[7];
-
-    static boolean isOver = false;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++)
             dwarfs[i] = Integer.parseInt(br.readLine());
-        }
 
         Arrays.sort(dwarfs);
+        calculate();
 
-        dfs(0, 0);
+        for (int dwarf : dwarfs)
+            if (dwarf != -1)
+                System.out.println(dwarf);
+
     }
 
-    static void dfs(int start, int depth) {
-        if (depth == 7) {
-            if (!isOver) {
-                int sum = 0;
-                for (int dwarf : dwarfsJar) {
-                    sum += dwarf;
-                }
-
-                if (sum == 100) {
-                    isOver = true;
-
-                    for (int dwarf : dwarfsJar) {
-                        System.out.println(dwarf);
-                    }
+    private static void calculate() {
+        int sum = Arrays.stream(dwarfs).sum();
+        for (int i = 0; i < dwarfs.length; i++) {
+            for (int j = 0; j < dwarfs.length; j++) {
+                if (dwarfs[i] + dwarfs[j] == sum - 100) {
+                    dwarfs[i] = dwarfs[j] = -1;
+                    return;
                 }
             }
-
-            return;
-        }
-
-        for (int i = start; i < dwarfs.length; i++) {
-            visited[i] = true;
-            dwarfsJar[depth] = dwarfs[i];
-
-            dfs(start + 1, depth + 1);
-
-            visited[i] = false;
-            dwarfsJar[depth] = 0;
         }
     }
+
 }
